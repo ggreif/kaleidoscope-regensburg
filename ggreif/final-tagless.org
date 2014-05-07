@@ -1,0 +1,32 @@
+
+* Finally-tagless representation
+
+Let's consider the "finally" thingy first.
+
+represent AST nodes with functions alone
+
+our expression is "(3 + 4^2) * 2"
+
+> -- {-
+> plus, times, power :: Integer -> Integer -> Integer
+> (plus, times, power) = ((+), (*), (**))
+
+Constants are just themselves (for now)
+
+Now manually transcribe our expression
+
+> expr = (3 `plus` (4 `power` 2)) `times` 2
+
+clearly we can just ask GHCi for the result:
+
+*Main> expr
+38
+
+We can think of our AST being encoded by functions and the "evaluator"
+just the identity:
+
+> interpr'Integer = id
+
+A very strange interpreter!
+
+
