@@ -1,3 +1,8 @@
+* Preliminaries
+
+HOWTO: literate haskell in org-mode:
+https://gist.github.com/reetinder/4022989
+
 
 * Finally-tagless representation
 
