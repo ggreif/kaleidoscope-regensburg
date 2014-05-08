@@ -1,3 +1,9 @@
+* Tasks
+** TODO: digest [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][org-mode tutorial]]
+** TODO: integrate [[https://gist.github.com/reetinder/4022989][literate haskell in org-mode]]
+** TODO: describe the data Void <--> forall a . a isomorphism
+** TODO: open interpretation, e.g. circuit as Haskell function or VHDL module
+
 * Preliminaries
 
 HOWTO: literate haskell in org-mode:
