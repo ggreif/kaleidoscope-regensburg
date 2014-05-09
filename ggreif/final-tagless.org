@@ -115,7 +115,20 @@ By adding a new type instance we can reinterpret our representation
 in arbitrarily many ways.
 
 Let's consider a pretty printer which passes context, i.e. the current
-precedence level to eliminate 
+precedence level to eliminate superfluous parentheses:
+
+> newtype Prec = P (Int -> String)
+
+> instance Arith Prec where
+>   lit = show
+>   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
+>   times = -- dito
+>   power = -- dito
+
+*** TODO finish up above
+
+The general pattern for passing in contextual information is by
+employing a (newtype of) function type for representation type.
 
 We could come up with diagrams or some other algorithm, e.g. an analysis:
 
