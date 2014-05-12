@@ -54,14 +54,14 @@ Background: 'invented' by Reynolds in the 1970's.
 
 Let's make this a bit more useful.
 
-> -- {-
+> {-
 > plus, times, power :: repr -> repr -> repr
 > (plus, times, power) = (undefined, undefined, undefined)
-> -- -}
+> -}
 
 Expr stays the same:
 
-> expr = (3 `plus` (4 `power` 2)) `times` 2
+> expr = (3 `plus` (4 `power` 2)) `times` (2 :: Integer)
 
 But of course evaluating it does not make lot of a sense:
 
@@ -73,7 +73,7 @@ So increase its utility by _restricting generality_.
 
 Define a type class Arith:
 
-> {-
+> -- {-
 > class Arith repr where
 >   plus, times, power :: repr -> repr -> repr
 
@@ -87,7 +87,7 @@ and give it our first implementation for repr ~ Integer:
 *Main> expr :: Integer
 38
 
-> -}
+> -- -}
 
 ** Adding another interpretation
 
