@@ -1,6 +1,6 @@
 * Tasks
 ** DONE digest [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][org-mode tutorial]]
-** TODO integrate [[https://gist.github.com/reetinder/4022989][literate haskell in org-mode]]
+** DONE integrate [[https://gist.github.com/reetinder/4022989][literate haskell in org-mode]] (does not work, too old?)
 ** TODO describe the data Void <--> forall a . a isomorphism
 ** TODO open interpretation, e.g. circuit as Haskell function or VHDL module
 
@@ -18,9 +18,12 @@ represent AST nodes with functions alone
 
 our expression is "(3 + 4^2) * 2"
 
-> -- {-
+> import Prelude hiding ((**))
+> p ** n = product $ replicate (fromInteger n) (toInteger p)
+
+> {-
 > plus, times, power :: Integer -> Integer -> Integer
-> (plus, times, power) = ((+), (*), \p n -> product $ replicate (fromInteger n) (toInteger p))
+> (plus, times, power) = ((+), (*), (**))
 
 Constants are just themselves (for now)
 
@@ -41,9 +44,9 @@ just the identity:
 *Main> interpr'Integer expr
 38
 
-> -- -}
-
 A very strange interpreter!
+
+> -}
 
 Background: 'invented' by Reynolds in the 1970's.
 
@@ -51,9 +54,10 @@ Background: 'invented' by Reynolds in the 1970's.
 
 Let's make this a bit more useful.
 
-> {-
+> -- {-
 > plus, times, power :: repr -> repr -> repr
 > (plus, times, power) = (undefined, undefined, undefined)
+> -- -}
 
 Expr stays the same:
 
@@ -69,6 +73,7 @@ So increase its utility by _restricting generality_.
 
 Define a type class Arith:
 
+> {-
 > class Arith repr where
 >   plus, times, power :: repr -> repr -> repr
 
