@@ -20,7 +20,7 @@ our expression is "(3 + 4^2) * 2"
 
 > -- {-
 > plus, times, power :: Integer -> Integer -> Integer
-> (plus, times, power) = ((+), (*), (**))
+> (plus, times, power) = ((+), (*), \p n -> product $ replicate (fromInteger n) (toInteger p))
 
 Constants are just themselves (for now)
 
@@ -51,7 +51,7 @@ Background: 'invented' by Reynolds in the 1970's.
 
 Let's make this a bit more useful.
 
-> -- {-
+> {-
 > plus, times, power :: repr -> repr -> repr
 > (plus, times, power) = (undefined, undefined, undefined)
 
@@ -59,9 +59,9 @@ Expr stays the same:
 
 > expr = (3 `plus` (4 `power` 2)) `times` 2
 
-> But of course evaluating it does not make lot of a sense:
+But of course evaluating it does not make lot of a sense:
 
-*Main> undefined
+*Main> expr
  *** Exception: Prelude.undefined
 
 The representation type is so general it is totally useless!
@@ -82,7 +82,7 @@ and give it our first implementation for repr ~ Integer:
 *Main> expr :: Integer
 38
 
-> -- -}
+> -}
 
 ** Adding another interpretation
 
@@ -92,7 +92,7 @@ by overloading our vocabulary to yield a string representation.
 But for this to work we cannot reuse our nullary Integers any more,
 we need an injection into the representation:
 
-> -- {-
+> {-
 > class Arith repr where
 >   lit :: Integer -> repr
 >   plus, times, power :: repr -> repr -> repr
@@ -101,15 +101,15 @@ we need an injection into the representation:
 > instance Arith String where
 >   lit = show
 >   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   times = -- dito
->   power = -- dito
+>   times = "(" ++ a ++ " * " ++ b ++ ")" -- dito
+>   power = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
 
 > expr = (lit 3 `plus` (lit 4 `power` lit 2)) `times` lit 2
 
 *Main> expr :: String
 "((3 + (4 ** 2)) * 2)"
 
-> -- -}
+> -}
 
 By adding a new type instance we can reinterpret our representation
 in arbitrarily many ways.
@@ -117,13 +117,15 @@ in arbitrarily many ways.
 Let's consider a pretty printer which passes context, i.e. the current
 precedence level to eliminate superfluous parentheses:
 
+> {-
 > newtype Prec = P (Int -> String)
 
 > instance Arith Prec where
 >   lit = show
 >   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   times = -- dito
->   power = -- dito
+>   times = "(" ++ a ++ " * " ++ b ++ ")" -- dito
+>   power = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
+> -}
 
 *** TODO finish up above
 
