@@ -116,7 +116,6 @@ we need an injection into the representation:
 *Main> expr :: String
 "((3 + (4 ** 2)) * 2)"
 
-> -- -}
 
 By adding a new type instance we can reinterpret our representation
 in arbitrarily many ways.
@@ -133,11 +132,12 @@ precedence level to eliminate superfluous parentheses:
 >   times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
 >   power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
 > -}
+> -- -}
 
 *** TODO finish up above
 
 The general pattern for passing in contextual information is by
-employing a (newtype of) function type for representation type.
+employing a (newtype of a) function type for representation type.
 
 We could come up with diagrams or some other algorithm, e.g. an analysis:
 
