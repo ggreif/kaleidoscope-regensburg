@@ -18,7 +18,7 @@ represent AST nodes with functions alone
 
 our expression is "(3 + 4^2) * 2"
 
-> {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
+> {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, GeneralizedNewtypeDeriving #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
 
@@ -139,5 +139,16 @@ precedence level to eliminate superfluous parentheses:
 The general pattern for passing in contextual information is by
 employing a (newtype of a) function type for representation type.
 
+** An Analysis
+
 We could come up with diagrams or some other algorithm, e.g. an analysis:
 
+Count operators in the expression tree
+
+> newtype Count = C Int deriving (Num, Show)
+
+> instance Arith Count where
+>   lit _ = 0
+>   plus (C a) (C b) = C (a + b + 1)
+>   times = plus
+>   power = plus
