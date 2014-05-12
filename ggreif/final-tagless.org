@@ -18,6 +18,7 @@ represent AST nodes with functions alone
 
 our expression is "(3 + 4^2) * 2"
 
+> {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
 
@@ -61,7 +62,7 @@ Let's make this a bit more useful.
 
 Expr stays the same:
 
-> expr = (3 `plus` (4 `power` 2)) `times` (2 :: Integer)
+> -- expr = (3 `plus` (4 `power` 2)) `times` (2 :: Integer)
 
 But of course evaluating it does not make lot of a sense:
 
@@ -73,7 +74,7 @@ So increase its utility by _restricting generality_.
 
 Define a type class Arith:
 
-> -- {-
+> {-
 > class Arith repr where
 >   plus, times, power :: repr -> repr -> repr
 
@@ -87,7 +88,7 @@ and give it our first implementation for repr ~ Integer:
 *Main> expr :: Integer
 38
 
-> -- -}
+> -}
 
 ** Adding another interpretation
 
@@ -97,7 +98,7 @@ by overloading our vocabulary to yield a string representation.
 But for this to work we cannot reuse our nullary Integers any more,
 we need an injection into the representation:
 
-> {-
+> -- {-
 > class Arith repr where
 >   lit :: Integer -> repr
 >   plus, times, power :: repr -> repr -> repr
@@ -106,15 +107,16 @@ we need an injection into the representation:
 > instance Arith String where
 >   lit = show
 >   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   times = "(" ++ a ++ " * " ++ b ++ ")" -- dito
->   power = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
+>   times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
+>   power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
 
+> expr :: Arith a => a
 > expr = (lit 3 `plus` (lit 4 `power` lit 2)) `times` lit 2
 
 *Main> expr :: String
 "((3 + (4 ** 2)) * 2)"
 
-> -}
+> -- -}
 
 By adding a new type instance we can reinterpret our representation
 in arbitrarily many ways.
@@ -128,8 +130,8 @@ precedence level to eliminate superfluous parentheses:
 > instance Arith Prec where
 >   lit = show
 >   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   times = "(" ++ a ++ " * " ++ b ++ ")" -- dito
->   power = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
+>   times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
+>   power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
 > -}
 
 *** TODO finish up above
