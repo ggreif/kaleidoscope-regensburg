@@ -152,3 +152,25 @@ Count operators in the expression tree
 >   plus (C a) (C b) = C (a + b + 1)
 >   times = plus
 >   power = plus
+
+** Interlude
+
+A "final" type
+
+> type TotallyPoly = forall a . a
+
+can be considered 100% entropy, while
+
+> data Void -- no constructors
+
+an "initial" type as 0% knowledge.
+
+They are the same thing, as we can convert one to the other:
+
+> p2v :: TotallyPoly -> Void
+> p2v a = a
+
+and back:
+
+> v2p :: Void -> TotallyPoly
+> v2p = \case {}
