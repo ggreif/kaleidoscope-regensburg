@@ -1,7 +1,7 @@
 * Tasks
 ** DONE digest [[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html][org-mode tutorial]]
 ** DONE integrate [[https://gist.github.com/reetinder/4022989][literate haskell in org-mode]] (does not work, too old?)
-** TODO describe the data Void <--> forall a . a isomorphism
+** DONE describe the data Void <--> forall a . a isomorphism
 ** TODO open interpretation, e.g. circuit as Haskell function or VHDL module
 
 * Preliminaries
@@ -19,6 +19,7 @@ represent AST nodes with functions alone
 our expression is "(3 + 4^2) * 2"
 
 > {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, GeneralizedNewtypeDeriving #-}
+> {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
 
