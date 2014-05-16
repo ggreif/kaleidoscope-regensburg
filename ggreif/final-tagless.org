@@ -209,3 +209,10 @@ Establish a little universe of types that parametrises the representation:
 I re(ab-)used the Haskell types as our universe inhabitants here.
 
 *** TODO: Add implementations
+
+
+* Summary: Pluripotent Representation
+
+By using "lower-case" indentifiers we can define ASTs abstractly
+with powerful potential specialisations. These do not stress the
+type system and offer all the benefits of GADTs.
