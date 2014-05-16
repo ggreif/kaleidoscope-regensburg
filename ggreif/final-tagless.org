@@ -19,7 +19,8 @@ represent AST nodes with functions alone
 our expression is "(3 + 4^2) * 2"
 
 > {-# LANGUAGE TypeSynonymInstances, FlexibleInstances
->   , GeneralizedNewtypeDeriving, MultiParamTypeClasses #-}
+>   , GeneralizedNewtypeDeriving, MultiParamTypeClasses
+>   , KindSignatures #-}
 > {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
@@ -184,9 +185,27 @@ let's add a conditional fragment.
 
 Here we have a second data domain, the booleans:
 
-> class Cond b where
->   cmp :: Arith n => n -> n -> b
->   if' :: b -> x -> x -> x
+> {-
+> class Arith n => Cond n b where
+>   cmp :: n -> n -> b
+>   if' :: b -> x -> x -> (b, x)
 
-> exprB :: (Arith a, Cond a) => a
-> exprB = if' ((lit 3 `cmp` lit 4 :: Arith a => a) :: Cond a => a) expr (expr `plus` lit 1)
+> exprB :: (Cond a b) => (b, a)
+> exprB = if' (lit 3 `cmp` (lit 4 :: Arith a => a)) expr (expr `plus` lit 1)
+> -}
+
+This results in tons of ambiguities, so we might try another approach:
+
+Establish a little universe of types that parametrises the representation:
+
+> class Arith' (repr :: * -> *) where
+>   lit' :: Integer -> repr Integer
+>   plus' :: repr Integer -> repr Integer -> repr Integer
+
+> class Cond (repr :: * -> *) where
+>   cmp :: repr Integer -> repr Integer -> repr Bool
+>   if' :: repr Bool -> repr a -> repr a -> repr a
+
+I re(ab-)used the Haskell types as our universe inhabitants here.
+
+*** TODO: Add implementations
