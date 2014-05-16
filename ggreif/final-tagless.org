@@ -210,9 +210,33 @@ I re(ab-)used the Haskell types as our universe inhabitants here.
 
 *** TODO: Add implementations
 
+** Deriving a GADT mechanically
+
+/GADTs/ are generalisations of ADTs (algebraic data types, sums-of-product types,
+polynomial datatypes), whose constructors may have specialized result types.
+
+Next we shall copy down all above class methods into our =Expr= GADT by
+replacing =repr= by =Expr=:
+
+> data Expr :: * -> * where
+>   Lit :: Integer -> Expr Integer
+>   Plus :: Expr Integer -> Expr Integer -> Expr Integer
+>   Cmp :: Expr Integer -> Expr Integer -> Expr Bool
+>   If :: Expr Bool -> Expr a -> Expr a -> Expr a
+
+Then we can trivially make Expr an instance of the above classes:
+
+*** TODO: Instances for GADT
 
 * Summary: Pluripotent Representation
 
 By using "lower-case" indentifiers we can define ASTs abstractly
 with powerful potential specialisations. These do not stress the
 type system and offer all the benefits of GADTs.
+
+While some techniques are more awkward to encode in finally tagless
+form, others arguably lend themselves to /cleaner/ (e.g. context-free)
+implementations.
+
+For an in-depth account of all the known techniques please refer
+to [[http://okmij.org/ftp/tagless-final/course/#lecture][Oleg's lecture notes]].
