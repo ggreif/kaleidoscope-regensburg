@@ -18,7 +18,8 @@ represent AST nodes with functions alone
 
 our expression is "(3 + 4^2) * 2"
 
-> {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, GeneralizedNewtypeDeriving #-}
+> {-# LANGUAGE TypeSynonymInstances, FlexibleInstances
+>   , GeneralizedNewtypeDeriving, MultiParamTypeClasses #-}
 > {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
@@ -175,3 +176,17 @@ and back:
 
 > v2p :: Void -> TotallyPoly
 > v2p = \case {}
+
+** Adding a Type System
+
+So far we could only express terms in the numeric fragment,
+let's add a conditional fragment.
+
+Here we have a second data domain, the booleans:
+
+> class Cond b where
+>   cmp :: Arith n => n -> n -> b
+>   if' :: b -> x -> x -> x
+
+> exprB :: (Arith a, Cond a) => a
+> exprB = if' ((lit 3 `cmp` lit 4 :: Arith a => a) :: Cond a => a) expr (expr `plus` lit 1)
