@@ -20,7 +20,7 @@ our expression is "(3 + 4^2) * 2"
 
 > {-# LANGUAGE TypeSynonymInstances, FlexibleInstances
 >   , GeneralizedNewtypeDeriving, MultiParamTypeClasses
->   , KindSignatures #-}
+>   , KindSignatures, GADTs #-}
 > {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
@@ -226,7 +226,15 @@ replacing =repr= by =Expr=:
 
 Then we can trivially make Expr an instance of the above classes:
 
-*** TODO: Instances for GADT
+*** DONE : Instances for GADT
+
+> instance Arith' Expr where
+>   lit' = Lit
+>   plus' = Plus
+>
+> instance Cond Expr where
+>   cmp = Cmp
+>   if' = If
 
 * Summary: Pluripotent Representation
 
