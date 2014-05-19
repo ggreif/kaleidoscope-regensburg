@@ -20,7 +20,7 @@ our expression is "(3 + 4^2) * 2"
 
 > {-# LANGUAGE TypeSynonymInstances, FlexibleInstances
 >   , GeneralizedNewtypeDeriving, MultiParamTypeClasses
->   , KindSignatures, GADTs #-}
+>   , KindSignatures, GADTs, StandaloneDeriving #-}
 > {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
@@ -28,6 +28,10 @@ our expression is "(3 + 4^2) * 2"
 > {-
 > plus, times, power :: Integer -> Integer -> Integer
 > (plus, times, power) = ((+), (*), (**))
+
+> infixr 8 power
+> infixr 7 times
+> infixr 6 plus
 
 Constants are just themselves (for now)
 
@@ -208,6 +212,11 @@ Establish a little universe of types that parametrises the representation:
 
 I re(ab-)used the Haskell types as our universe inhabitants here.
 
+> expr' :: Arith' repr => repr Integer
+> expr' = lit' 3 `plus'` lit' 5
+> exprB :: (Arith' repr, Cond repr) => repr Integer
+> exprB = if' (lit' 3 `cmp` lit' 4) expr' (expr' `plus'` lit' 1)
+
 *** TODO: Add implementations
 
 ** Deriving a GADT mechanically
@@ -224,9 +233,11 @@ replacing =repr= by =Expr=:
 >   Cmp :: Expr Integer -> Expr Integer -> Expr Bool
 >   If :: Expr Bool -> Expr a -> Expr a -> Expr a
 
+> deriving instance Show (Expr u)
+
 Then we can trivially make Expr an instance of the above classes:
 
-*** DONE : Instances for GADT
+*** Instances for GADT
 
 > instance Arith' Expr where
 >   lit' = Lit
