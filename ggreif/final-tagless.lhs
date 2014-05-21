@@ -286,3 +286,7 @@ ghci>:t 3
 
 and also in the monadic combinators =return= and ~(>>=)~, though
 these only allow really limited programs to be written.
+
+Also consider the analogy of
+  + encoding information in data (RAM)
+  + encode information in the control flow (PC).
