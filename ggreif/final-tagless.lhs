@@ -9,6 +9,8 @@
 HOWTO: literate haskell in org-mode:
 https://gist.github.com/reetinder/4022989
 
+Highlight in org-mode:
+(setq org-src-fontify-natively t)
 
 * Finally-tagless representation
 
@@ -239,6 +241,7 @@ Then we can trivially make Expr an instance of the above classes:
 
 *** Instances for GADT
 
+#+begin_src literate-haskell
 > instance Arith' Expr where
 >   lit' = Lit
 >   plus' = Plus
@@ -246,21 +249,20 @@ Then we can trivially make Expr an instance of the above classes:
 > instance Cond Expr where
 >   cmp = Cmp
 >   if' = If
+#+end_src
 
 *** Reifying the final-tagless form
 
 Clearly we can convert any =Expr= to the final form by writing a conventional
 interpreter:
 
---#+begin_src literate-haskell
-
+#+begin_src literate-haskell
 > expr2final :: (Arith' repr, Cond repr) => Expr a -> repr a
 > expr2final (Lit i) = lit' i
 > expr2final (e `Plus` e') = expr2final e `plus'` expr2final e'
 > expr2final (e `Cmp` e') = expr2final e `cmp` expr2final e'
 > expr2final (If c e e') = if' (expr2final c) (expr2final e) (expr2final e')
-
---#+end_src
+#+end_src
 
 This closes our proof of isomorphism between GADTs and finally-tagless formulation.
 
