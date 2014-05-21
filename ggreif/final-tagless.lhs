@@ -276,3 +276,13 @@ implementations.
 
 For an in-depth account of all the known techniques please refer
 to [[http://okmij.org/ftp/tagless-final/course/#lecture][Oleg's lecture notes]].
+
+* Closing Notes
+
+A germ of these ideas already existed in
+
+ghci>:t 3
+3 :: Num a => a
+
+and also in the monadic combinators =return= and ~(>>=)~, though
+these only allow really limited programs to be written.
