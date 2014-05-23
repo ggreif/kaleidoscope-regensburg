@@ -224,7 +224,7 @@ Establish a little universe of types that parametrises the representation:
 >   cmp :: repr Integer -> repr Integer -> repr Bool
 >   if' :: repr Bool -> repr a -> repr a -> repr a
 
-I re(ab-)used the Haskell types as our universe inhabitants here.
+I re-(ab)used the Haskell types as our universe inhabitants here.
 
 > expr' :: Arith' repr => repr Integer
 > expr' = lit' 3 `plus'` lit' 5
