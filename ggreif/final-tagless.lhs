@@ -249,6 +249,8 @@ replacing =repr= by =Expr=:
 
 > deriving instance Show (Expr u)
 
+/Note that we had to join the methods from two classes =Arith'= and =Cond= in one data type./
+
 Then we can trivially make Expr an instance of the above classes:
 
 *** Instances for GADT
