@@ -157,8 +157,6 @@ precedence level to eliminate superfluous parentheses:
 *Main> expr :: Prec
 (3 + 4 ^ 2) * 2
 
-*** DONE finish up above
-
 The general pattern for passing in contextual information is by
 employing a (newtype of a) function type for representation type.
 
