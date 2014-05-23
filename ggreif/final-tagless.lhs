@@ -132,16 +132,18 @@ in arbitrarily many ways.
 Let's consider a pretty printer which passes context, i.e. the current
 precedence level to eliminate superfluous parentheses:
 
-> {-
+#+begin_src literate-haskell
+> --{-
 > newtype Prec = P (Int -> String)
 
 > instance Arith Prec where
->   lit = show
->   plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
->   power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
-> -}
+>   lit i = P $ const $ show i
+>   --plus a b = "(" ++ a ++ " + " ++ b ++ ")"
+>   --times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
+>   --power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
 > -- -}
+> -- -}
+#+end_src
 
 *** TODO finish up above
 
