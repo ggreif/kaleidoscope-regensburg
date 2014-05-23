@@ -12,4 +12,4 @@ _slast=${!#}
 
 /home/ggreif/lib/ghc-7.9.20140415/unlit ${1+"$@"}
 
-awk '/ *#/{print ""}' ${_slast} > ${_slast}X && rm ${_slast} && mv ${_slast}X ${_slast}
+awk '/ *#/{print ""}{print}' ${_slast} > ${_slast}X && rm ${_slast} && mv ${_slast}X ${_slast}
