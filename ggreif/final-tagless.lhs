@@ -31,9 +31,9 @@ our expression is "(3 + 4^2) * 2"
 > plus, times, power :: Integer -> Integer -> Integer
 > (plus, times, power) = ((+), (*), (**))
 
-> infixr 8 power
-> infixr 7 times
-> infixr 6 plus
+> infixl 8 `power`
+> infixl 7 `times`
+> infixl 6 `plus`
 
 Constants are just themselves (for now)
 
@@ -141,12 +141,15 @@ precedence level to eliminate superfluous parentheses:
 
 > instance Arith Prec where
 >   lit i = P $ const $ show i
->   plus (P a) (P b) = P $ \p -> if p > 6 then "(" ++ inner ++ ")" else inner
->     where inner = a 6  ++ " + " ++ b 6
->   times (P a) (P b) = P $ \p -> if p > 7 then "(" ++ inner ++ ")" else inner
->     where inner = a 7  ++ " * " ++ b 7
->   power (P a) (P b) = P $ \p -> if p > 8 then "(" ++ inner ++ ")" else inner
->     where inner = a 8  ++ " ^ " ++ b 8
+>   plus (P a) (P b) = P $ \p -> inner `parenIf` p > 6
+>     where inner = a 6 ++ " + " ++ b 6
+>   times (P a) (P b) = P $ \p -> inner `parenIf` p > 7
+>     where inner = a 7 ++ " * " ++ b 7
+>   power (P a) (P b) = P $ \p -> inner `parenIf` p > 8
+>     where inner = a 8 ++ " ^ " ++ b 8
+
+> parenIf s cond = if cond then "(" ++ s ++ ")" else s
+> infix 1 `parenIf`
 > -- -}
 > -- -}
 #+end_src
@@ -154,7 +157,7 @@ precedence level to eliminate superfluous parentheses:
 *Main> expr :: Prec
 (3 + 4 ^ 2) * 2
 
-*** TODO finish up above
+*** DONE finish up above
 
 The general pattern for passing in contextual information is by
 employing a (newtype of a) function type for representation type.
