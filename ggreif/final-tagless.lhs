@@ -136,14 +136,23 @@ precedence level to eliminate superfluous parentheses:
 > --{-
 > newtype Prec = P (Int -> String)
 
+> instance Show Prec where
+>   show (P f) = f 0
+
 > instance Arith Prec where
 >   lit i = P $ const $ show i
->   --plus a b = "(" ++ a ++ " + " ++ b ++ ")"
->   --times a b = "(" ++ a ++ " * " ++ b ++ ")" -- dito
->   --power a b = "(" ++ a ++ " ** " ++ b ++ ")" -- dito
+>   plus (P a) (P b) = P $ \p -> if p > 6 then "(" ++ inner ++ ")" else inner
+>     where inner = a 6  ++ " + " ++ b 6
+>   times (P a) (P b) = P $ \p -> if p > 7 then "(" ++ inner ++ ")" else inner
+>     where inner = a 7  ++ " * " ++ b 7
+>   power (P a) (P b) = P $ \p -> if p > 8 then "(" ++ inner ++ ")" else inner
+>     where inner = a 8  ++ " ^ " ++ b 8
 > -- -}
 > -- -}
 #+end_src
+
+*Main> expr :: Prec
+(3 + 4 ^ 2) * 2
 
 *** TODO finish up above
 
