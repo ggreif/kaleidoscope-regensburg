@@ -293,6 +293,8 @@ implementations.
 For an in-depth account of all the known techniques please refer
 to [[http://okmij.org/ftp/tagless-final/course/#lecture][Oleg's lecture notes]].
 
+[[http://www.haskellforall.com/2012/06/gadts.html][Tekmo's blog post]] (and related discussion) is great too.
+
 * Closing Notes
 
 A germ of these ideas already existed in
