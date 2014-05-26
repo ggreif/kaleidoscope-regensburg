@@ -233,6 +233,18 @@ I re-(ab)used the Haskell types as our universe inhabitants here.
 
 *** TODO: Add implementations
 
+#+begin_src literate-haskell
+> data E ty = EI Integer | EB Bool deriving Show
+
+> instance Arith' E where
+>   lit' = EI
+>   plus' (EI a) (EI b) = EI $ a + b
+
+> instance Cond E where
+>   cmp (EI a) (EI b) = EB $ a == b
+>   if' (EB c) th el = if c then th else el
+#+end_src
+
 ** Deriving a GADT mechanically
 
 /GADTs/ are generalisations of ADTs (algebraic data types, sums-of-product types,
