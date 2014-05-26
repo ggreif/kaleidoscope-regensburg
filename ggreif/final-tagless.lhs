@@ -231,10 +231,16 @@ I re-(ab)used the Haskell types as our universe inhabitants here.
 > exprB :: (Arith' repr, Cond repr) => repr Integer
 > exprB = if' (lit' 3 `cmp` lit' 4) expr' (expr' `plus'` lit' 1)
 
-*** TODO: Add implementations
+*** DONE : Add implementations
+
+We can now interpret those terms in a bi-typed domain.
 
 #+begin_src literate-haskell
-> data E ty = EI Integer | EB Bool deriving Show
+> data E ty where
+>   EI :: Integer -> E Integer
+>   EB :: Bool -> E Bool
+
+> deriving instance Show (E ty)
 
 > instance Arith' E where
 >   lit' = EI
@@ -244,6 +250,10 @@ I re-(ab)used the Haskell types as our universe inhabitants here.
 >   cmp (EI a) (EI b) = EB $ a == b
 >   if' (EB c) th el = if c then th else el
 #+end_src
+
+Since the parameter (to =repr=) is always determined by the method signature,
+the interpreter need not expect other constructors than what is stated above.
+Our interpreter is /total/.
 
 ** Deriving a GADT mechanically
 
