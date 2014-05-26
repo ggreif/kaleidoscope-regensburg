@@ -3,7 +3,7 @@
 ** DONE integrate [[https://gist.github.com/reetinder/4022989][literate haskell in org-mode]] (does not work, too old?)
 ** DONE describe the data Void <--> forall a . a isomorphism
 ** TODO open interpretation, e.g. circuit as Haskell function or VHDL module
-** TODO revind to the start of the presentation (block comments)
+** TODO rewind to the start of the presentation (block comments)
 
 * Preliminaries
 
