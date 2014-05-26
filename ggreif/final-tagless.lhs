@@ -286,6 +286,10 @@ By using "lower-case" indentifiers we can define ASTs abstractly
 with powerful potential specialisations. These do not stress the
 type system and offer all the benefits of GADTs.
 
+As such it can smoothly vary between shallow and deep embedding
+of EDSLs and blur those terms. Lastly the isomorphism to initial
+form ensures that one can break out any time and return if wanted.
+
 While some techniques are more awkward to encode in finally tagless
 form, others arguably lend themselves to /cleaner/ (e.g. context-free)
 implementations.
