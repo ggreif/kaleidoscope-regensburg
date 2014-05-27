@@ -316,7 +316,15 @@ if wanted.
 
 While some techniques are more awkward to encode in finally tagless
 form, others arguably lend themselves to /cleaner/ (e.g. context-free)
-implementations.
+implementations. This explicit passing of context suggests simple
+/attribute grammar/ inherited attributes.
+
+The finally-tagless representation has been suggested as an elegant
+solution to the /expression problem/. The vocabulary is extensible
+by adding new typeclasses, and new interpretations can be added in
+the orthogonal dimension. Haskell's type system performs the bookkeeping
+of arising constraints. Contrast this to the machinery of the /á la carte/
+approach.
 
 For an in-depth account of all the known techniques please refer
 to [[http://okmij.org/ftp/tagless-final/course/#lecture][Oleg's lecture notes]].
