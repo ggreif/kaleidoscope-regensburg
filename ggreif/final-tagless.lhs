@@ -28,7 +28,7 @@ our expression is "(3 + 4^2) * 2"
 > import Prelude hiding ((**))
 > p ** n = product $ replicate (fromInteger n) (toInteger p)
 
-> {-
+> -- {-
 > plus, times, power :: Integer -> Integer -> Integer
 > (plus, times, power) = ((+), (*), (**))
 
@@ -57,7 +57,7 @@ just the identity:
 
 A very strange interpreter!
 
-> -}
+> -- -}
 
 Background: 'invented' by Reynolds in the 1970's.
 
@@ -108,7 +108,7 @@ by overloading our vocabulary to yield a string representation.
 But for this to work we cannot reuse our nullary Integers any more,
 we need an injection into the representation:
 
-> -- {-
+> {-
 > class Arith repr where
 >   lit :: Integer -> repr
 >   plus, times, power :: repr -> repr -> repr
@@ -152,7 +152,7 @@ precedence level to eliminate superfluous parentheses:
 > parenIf s cond = if cond then "(" ++ s ++ ")" else s
 > infix 1 `parenIf`
 > -- -}
-> -- -}
+> -}
 #+end_src
 
 *Main> expr :: Prec
@@ -169,11 +169,13 @@ Count operators in the expression tree
 
 > newtype Count = C Int deriving (Num, Show)
 
+> {-
 > instance Arith Count where
 >   lit _ = 0
 >   plus (C a) (C b) = C (a + b + 1)
 >   times = plus
 >   power = plus
+> -}
 
 ** Interlude
 
