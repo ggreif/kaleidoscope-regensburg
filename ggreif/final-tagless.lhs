@@ -26,11 +26,12 @@ our expression is "(3 + 4^2) * 2"
 >   , KindSignatures, GADTs, StandaloneDeriving #-}
 > {-# LANGUAGE RankNTypes, LambdaCase, EmptyCase #-}
 > import Prelude hiding ((**))
-> p ** n = product $ replicate (fromInteger n) (toInteger p)
+> p ** n = (^)  p n -- product $ replicate (fromInteger n) (toInteger p)
 
-> -- {-
+> {-
 > plus, times, power :: Integer -> Integer -> Integer
 > (plus, times, power) = ((+), (*), (**))
+> -}
 
 > infixl 8 `power`
 > infixl 7 `times`
@@ -40,7 +41,7 @@ Constants are just themselves (for now)
 
 Now manually transcribe our expression
 
-> expr = (3 `plus` (4 `power` 2)) `times` 2
+> -- expr = (3 `plus` (4 `power` 2)) `times` 2
 
 clearly we can just ask GHCi for the result:
 
@@ -65,10 +66,10 @@ Background: 'invented' by Reynolds in the 1970's.
 
 Let's make this a bit more useful.
 
-> {-
-> plus, times, power :: repr -> repr -> repr
-> (plus, times, power) = (undefined, undefined, undefined)
-> -}
+> 
+> --plus, times, power :: repr -> repr -> repr
+> --(plus, times, power) = (undefined, undefined, undefined)
+> 
 
 Expr stays the same:
 
@@ -84,13 +85,15 @@ So increase its utility by _restricting generality_.
 
 Define a type class Arith:
 
-> {-
-> class Arith repr where
->   plus, times, power :: repr -> repr -> repr
+> 
+> --class Arith repr where
+> --  lit = id
+> --  plus, times, power :: repr -> repr -> repr
 
 and give it our first implementation for repr ~ Integer:
 
 > instance Arith Integer where
+>   lit = id
 >   plus = (+)
 >   times = (*)
 >   power = (**)
@@ -98,7 +101,7 @@ and give it our first implementation for repr ~ Integer:
 *Main> expr :: Integer
 38
 
-> -}
+> 
 
 ** Adding another interpretation
 
@@ -108,7 +111,7 @@ by overloading our vocabulary to yield a string representation.
 But for this to work we cannot reuse our nullary Integers any more,
 we need an injection into the representation:
 
-> {-
+> 
 > class Arith repr where
 >   lit :: Integer -> repr
 >   plus, times, power :: repr -> repr -> repr
@@ -152,7 +155,7 @@ precedence level to eliminate superfluous parentheses:
 > parenIf s cond = if cond then "(" ++ s ++ ")" else s
 > infix 1 `parenIf`
 > -- -}
-> -}
+> 
 #+end_src
 
 *Main> expr :: Prec
@@ -169,13 +172,13 @@ Count operators in the expression tree
 
 > newtype Count = C Int deriving (Num, Show)
 
-> {-
+> 
 > instance Arith Count where
 >   lit _ = 0
 >   plus (C a) (C b) = C (a + b + 1)
 >   times = plus
 >   power = plus
-> -}
+> 
 
 ** Interlude
 
@@ -197,7 +200,18 @@ They are the same thing, as we can convert one to the other:
 and back:
 
 > v2p :: Void -> TotallyPoly
-> v2p = \case {}
+> v2p v = case v of
+
+** Pairing
+
+We can build a pair representation, given two distinct representations
+
+> instance (Arith a, Arith b) => Arith (a, b) where
+>   lit i = (lit i, lit i)
+>   (a, b) `plus` (c, d) = (a `plus` c, b  `plus` d)
+>   (a, b) `times` (c, d) = (a `times` c, b  `times` d)
+>   (a, b) `power` (c, d) = (a `power` c, b  `power` d)
+
 
 ** Adding a Type System
 
@@ -225,13 +239,14 @@ Establish a little universe of types that parametrises the representation:
 
 > class Cond (repr :: * -> *) where
 >   cmp :: repr Integer -> repr Integer -> repr Bool
+>   cmpB :: repr Bool -> repr Bool -> repr Bool
 >   if' :: repr Bool -> repr a -> repr a -> repr a
 
 I re-(ab)used the Haskell types as our universe inhabitants here.
 
-> expr' :: Arith' repr => repr Integer
+> --expr' :: Arith' repr => repr Integer
 > expr' = lit' 3 `plus'` lit' 5
-> exprB :: (Arith' repr, Cond repr) => repr Integer
+> --exprB :: (Arith' repr, Cond repr) => repr Integer
 > exprB = if' (lit' 3 `cmp` lit' 4) expr' (expr' `plus'` lit' 1)
 
 *** DONE : Add implementations
@@ -239,19 +254,21 @@ I re-(ab)used the Haskell types as our universe inhabitants here.
 We can now interpret those terms in a bi-typed domain.
 
 #+begin_src literate-haskell
-> data E ty where
+> newtype Id ty = Id ty deriving Show
+> {-data E ty where
 >   EI :: Integer -> E Integer
->   EB :: Bool -> E Bool
+>   EB :: Bool -> E Bool-}
 
-> deriving instance Show (E ty)
+> --deriving instance Show (Id ty)
 
-> instance Arith' E where
->   lit' = EI
->   plus' (EI a) (EI b) = EI $ a + b
+> instance Arith' Id where
+>   lit' = Id
+>   plus' (Id a) (Id b) = Id $ a + b
 
-> instance Cond E where
->   cmp (EI a) (EI b) = EB $ a == b
->   if' (EB c) th el = if c then th else el
+> instance Cond Id where
+>   cmp (Id a) (Id b) = Id $ a == b
+>   cmpB (Id a) (Id b) = Id $ a == b
+>   if' (Id c) th el = if c then th else el
 #+end_src
 
 Since the parameter (to =repr=) is always determined by the method signature,
@@ -270,6 +287,7 @@ replacing =repr= by =Expr=:
 >   Lit :: Integer -> Expr Integer
 >   Plus :: Expr Integer -> Expr Integer -> Expr Integer
 >   Cmp :: Expr Integer -> Expr Integer -> Expr Bool
+>   CmpB :: Expr Bool -> Expr Bool -> Expr Bool
 >   If :: Expr Bool -> Expr a -> Expr a -> Expr a
 
 > deriving instance Show (Expr u)
@@ -287,6 +305,7 @@ Then we can trivially make Expr an instance of the above classes:
 >
 > instance Cond Expr where
 >   cmp = Cmp
+>   cmpB = CmpB
 >   if' = If
 #+end_src
 
